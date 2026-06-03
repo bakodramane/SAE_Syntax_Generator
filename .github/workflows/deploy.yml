@@ -31,8 +31,6 @@ jobs:
 
       - name: Build
         run: npm run build
-        env:
-          VITE_BASE_URL: /SAE_Syntax_Generator/
 
       - name: Upload Pages artefact
         uses: actions/upload-pages-artifact@v3
