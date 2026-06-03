@@ -64,7 +64,7 @@ reblup_result <- reblup(
   formula  = {{TARGET_VAR}} ~ {{AUX_VARS_R}},
   domain   = survey_data\${{AREA_ID}},
   sizedom  = census_data$Ni,
-  meanxpop = census_data[, c({{AUX_VARS_R_QUOTED}})],
+  meanxpop = census_data[, c({{AUX_VARS_R_VEC}})],
   data     = survey_data
 )
 

@@ -61,7 +61,7 @@ census_data <- read.csv("{{CENSUS_DATA}}")
 # census_data must have: {{AREA_ID}}, population size (Ni), and means of {{AUX_VARS_R}}
 
 # Area population means matrix (columns = auxiliary variable means, rows = areas)
-meanxpop <- census_data[, c("{{AREA_ID}}", {{AUX_VARS_R_QUOTED}})]
+meanxpop <- census_data[, c("{{AREA_ID}}", {{AUX_VARS_R_VEC}})]
 popnsize  <- data.frame(area = census_data\${{AREA_ID}},
                         Ni   = census_data$Ni)
 

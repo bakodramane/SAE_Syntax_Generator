@@ -15,6 +15,7 @@ Use these tokens consistently across all R and Stata templates:
 | `{{TARGET_VAR}}` | Name of the target (outcome) variable |
 | `{{AREA_ID}}` | Name of the small area identifier variable |
 | `{{AUX_VARS_R}}` | Auxiliary variables as R formula terms, e.g. `x1 + x2` |
+| `{{AUX_VARS_R_VEC}}` | Auxiliary variable names as a quoted R character vector, e.g. `"x1", "x2"` — for column-selection contexts such as `c({{AUX_VARS_R_VEC}})` |
 | `{{AUX_VARS_STATA}}` | Auxiliary variables space-separated, e.g. `x1 x2` |
 | `{{WEIGHT_VAR}}` | Sampling weight variable name |
 | `{{DIRECT_EST_VAR}}` | Pre-computed direct estimate column |
