@@ -71,7 +71,7 @@ hb_result <- hbNormal(
   formula     = {{TARGET_VAR}} ~ {{AUX_VARS_R}},
   dom         = survey_data\${{AREA_ID}},
   Ni          = census_data$Ni,
-  Xmean       = census_data[, c({{AUX_VARS_R_QUOTED}})],
+  Xmean       = census_data[, c({{AUX_VARS_R_VEC}})],
   data        = survey_data,
   iter.update = 3,
   iter.mcmc   = {{N_SIM}},
