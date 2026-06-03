@@ -28,7 +28,7 @@ const FH_INPUTS: UserInputs = {
   directEstVar: 'dir_est',
   directVarVar: 'dir_var',
   surveyDataPath: 'survey.csv',
-  censusDataPath: 'area_data.csv',
+  areaDataPath: 'area_data.csv',    // FH is area-level: uses {{AREA_DATA}} token
   stataVersion: 14,
   nSimulations: 200,
   mseMethod: 'analytic',

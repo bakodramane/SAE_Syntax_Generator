@@ -1,0 +1,8 @@
+name,label,type
+income,Household income,continuous
+district,District identifier,identifier
+edu_rate,Education rate,continuous
+urban_pct,Urban percentage,continuous
+survey_weight,Survey sampling weight,continuous
+dir_est,Direct estimate of mean income,continuous
+dir_var,Sampling variance of direct estimate,continuous
