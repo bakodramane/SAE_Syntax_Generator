@@ -39,10 +39,10 @@ const entry: CatalogueEntry = {
     'There are enough areas (m ≥ 20) for reliable variance component estimation.',
   ],
   references: [
-    'Fay, R.E. & Herriot, R.A. (1979). JASA 74, 269–277.',
-    'Prasad, N. & Rao, J. (1990). JASA 85, 163–171.',
-    'Rao & Molina (2015). Small Area Estimation, 2nd ed. Ch. 4.',
-    'Molina, I. & Marhuenda, Y. (2015). The R Journal 7(1). [sae package]',
+    'Fay, R.E. & Herriot, R.A. (1979). JASA 74, 269–277. https://doi.org/10.1080/01621459.1979.10481623',
+    'Prasad, N. & Rao, J. (1990). JASA 85, 163–171. https://doi.org/10.1080/01621459.1990.10474803',
+    'Rao, J.N.K. & Molina, I. (2015). Small Area Estimation, 2nd ed. Wiley. Ch. 4. https://onlinelibrary.wiley.com/doi/book/10.1002/9781118735855',
+    'Molina, I. & Marhuenda, Y. (2015). The R Journal 7(1). [sae package] https://doi.org/10.32614/RJ-2015-009',
   ],
   rTemplate: `# ============================================================
 # Fay–Herriot EBLUP (Area-Level)

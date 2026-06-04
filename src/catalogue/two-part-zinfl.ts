@@ -37,9 +37,9 @@ const entry: CatalogueEntry = {
     'Area random effects in both parts may be correlated.',
   ],
   references: [
-    'Pfeffermann, D. et al. (2008). Survey Methodology 34, 105–116.',
-    'Chandra, H. & Chambers, R. (2014). Computational Statistics 29, 1023–1050.',
-    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 8.',
+    'Pfeffermann, D. et al. (2008). Survey Methodology 34, 105–116. https://www150.statcan.gc.ca/n1/pub/12-001-x/2008001/article/10612-eng.pdf',
+    'Chandra, H. & Chambers, R. (2014). Computational Statistics 29, 1023–1050. https://doi.org/10.1007/s00180-013-0409-8',
+    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 8. https://www.fao.org/3/i4818e/i4818e.pdf',
   ],
   rTemplate: `# ============================================================
 # Two-Part / Zero-Inflated Model (Unit-Level)

@@ -21,15 +21,24 @@ export default defineConfig({
         start_url: '/SAE_Syntax_Generator/',
         icons: [
           {
-            src: 'icons/icon-192x192.svg',
-            sizes: '192x192',
-            type: 'image/svg+xml',
-            purpose: 'any',
+            src: 'icons/pwa-64x64.png',
+            sizes: '64x64',
+            type: 'image/png',
           },
           {
-            src: 'icons/icon-512x512.svg',
+            src: 'icons/pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'icons/pwa-512x512.png',
             sizes: '512x512',
-            type: 'image/svg+xml',
+            type: 'image/png',
+          },
+          {
+            src: 'icons/maskable-icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
             purpose: 'maskable',
           },
         ],

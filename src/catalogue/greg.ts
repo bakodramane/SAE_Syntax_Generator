@@ -37,8 +37,8 @@ const entry: CatalogueEntry = {
     'Survey weights are correct.',
   ],
   references: [
-    'Rao, J.N.K. & Molina, I. (2015). Small Area Estimation, 2nd ed. Wiley. Ch. 3.',
-    'FAO (2015). Spatial Disaggregation and SAE Methods for Agricultural Surveys. Ch. 2.3.',
+    'Rao, J.N.K. & Molina, I. (2015). Small Area Estimation, 2nd ed. Wiley. Ch. 3. https://onlinelibrary.wiley.com/doi/book/10.1002/9781118735855',
+    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 2.3. https://www.fao.org/3/i4818e/i4818e.pdf',
   ],
   rTemplate: `# ============================================================
 # GREG — Generalised Regression Estimator

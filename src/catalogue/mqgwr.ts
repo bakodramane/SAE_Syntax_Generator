@@ -40,8 +40,8 @@ const entry: CatalogueEntry = {
     'Coordinates (centroids) are available for sampled and non-sampled areas.',
   ],
   references: [
-    'Salvati, N. et al. (2012). CSDA 56, 2875–2888.',
-    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 2.5.4.',
+    'Salvati, N. et al. (2012). CSDA 56, 2875–2888. https://doi.org/10.1016/j.csda.2011.11.006',
+    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 2.5.4. https://www.fao.org/3/i4818e/i4818e.pdf',
   ],
   rTemplate: `# ============================================================
 # M-Quantile GWR (Unit-Level, Robust + Spatial)
