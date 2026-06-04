@@ -40,9 +40,9 @@ const entry: CatalogueEntry = {
     'At least some sampled units in each area (out-of-sample: synthetic predictor only).',
   ],
   references: [
-    'Battese, G.E., Harter, R.M. & Fuller, W.A. (1988). JASA 83, 28–36.',
-    'Rao & Molina (2015). Small Area Estimation, 2nd ed. Ch. 7.',
-    'Molina, I. & Marhuenda, Y. (2015). The R Journal 7(1). [sae package]',
+    'Battese, G.E., Harter, R.M. & Fuller, W.A. (1988). JASA 83, 28–36. https://doi.org/10.1080/01621459.1988.10477104',
+    'Rao, J.N.K. & Molina, I. (2015). Small Area Estimation, 2nd ed. Wiley. Ch. 7. https://onlinelibrary.wiley.com/doi/book/10.1002/9781118735855',
+    'Molina, I. & Marhuenda, Y. (2015). The R Journal 7(1). [sae package] https://doi.org/10.32614/RJ-2015-009',
   ],
   rTemplate: `# ============================================================
 # Battese–Harter–Fuller Nested-Error EBLUP (Unit-Level)

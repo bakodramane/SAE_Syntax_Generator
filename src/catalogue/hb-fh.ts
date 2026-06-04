@@ -41,9 +41,9 @@ const entry: CatalogueEntry = {
     'Likelihood model (Normal/Beta/Poisson) suits the data.',
   ],
   references: [
-    'Rao & Molina (2015). Small Area Estimation, 2nd ed. Ch. 10.',
-    'Datta, G.S. & Ghosh, M. (1991). Annals of Statistics 19, 1748–1770.',
-    'saeHB package: CRAN, https://cran.r-project.org/package=saeHB',
+    'Rao, J.N.K. & Molina, I. (2015). Small Area Estimation, 2nd ed. Wiley. Ch. 10. https://onlinelibrary.wiley.com/doi/book/10.1002/9781118735855',
+    'Datta, G.S. & Ghosh, M. (1991). Annals of Statistics 19, 1748–1770. https://doi.org/10.1214/aos/1176348381',
+    'saeHB package: CRAN. https://cran.r-project.org/package=saeHB',
   ],
   caveats: [
     'MCMC can be slow for many areas or complex models.',

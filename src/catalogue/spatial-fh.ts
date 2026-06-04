@@ -37,10 +37,10 @@ const entry: CatalogueEntry = {
     'The contiguity matrix correctly represents neighbourhood relationships.',
   ],
   references: [
-    'Pratesi, M. & Salvati, N. (2008). Statistical Methods and Applications 17, 113–141.',
-    'Singh, B. et al. (2005). Survey Methodology 31(1), 33–40.',
-    'Rao & Molina (2015). Small Area Estimation, 2nd ed. Ch. 8.',
-    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 2.4.3.',
+    'Pratesi, M. & Salvati, N. (2008). Statistical Methods and Applications 17, 113–141. https://doi.org/10.1007/s10260-006-0031-z',
+    'Singh, B. et al. (2005). Survey Methodology 31(1), 33–40. https://www150.statcan.gc.ca/n1/pub/12-001-x/2005001/article/8036-eng.pdf',
+    'Rao, J.N.K. & Molina, I. (2015). Small Area Estimation, 2nd ed. Wiley. Ch. 8. https://onlinelibrary.wiley.com/doi/book/10.1002/9781118735855',
+    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 2.4.3. https://www.fao.org/3/i4818e/i4818e.pdf',
   ],
   caveats: [
     'Constructing the contiguity matrix requires GIS boundary files or coordinates.',

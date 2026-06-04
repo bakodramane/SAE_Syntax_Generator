@@ -36,8 +36,9 @@ const entry: CatalogueEntry = {
     'Survey weights correctly reflect the sampling design.',
   ],
   references: [
-    'Kish, L. (1965). Survey Sampling. Wiley.',
-    'Cochran, W.G. (1977). Sampling Techniques, 3rd ed. Wiley.',
+    'Kish, L. (1965). Survey Sampling. Wiley. https://www.wiley.com/en-gb/Survey+Sampling-p-9780471489009',
+    'Cochran, W.G. (1977). Sampling Techniques, 3rd ed. Wiley. https://www.wiley.com/en-gb/Sampling+Techniques%2C+3rd+Edition-p-9780471162407',
+    'survey package for R (Lumley, T.). https://cran.r-project.org/package=survey',
   ],
   rTemplate: `# ============================================================
 # Direct Estimator — Design-Based Benchmark
