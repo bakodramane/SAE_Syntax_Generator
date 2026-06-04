@@ -42,9 +42,9 @@ const entry: CatalogueEntry = {
     'Population means of auxiliary variables are known for all target areas.',
   ],
   references: [
-    'Chambers, R. & Tzavidis, N. (2006). Biometrika 93, 255–268.',
-    'Marchetti, S., Tzavidis, N. & Pratesi, M. (2012). CSDA 56, 2889–2902.',
-    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 2.5.3.',
+    'Chambers, R. & Tzavidis, N. (2006). Biometrika 93, 255–268. https://doi.org/10.1093/biomet/93.2.255',
+    'Marchetti, S., Tzavidis, N. & Pratesi, M. (2012). CSDA 56, 2889–2902. https://doi.org/10.1016/j.csda.2011.10.017',
+    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 2.5.3. https://www.fao.org/3/i4818e/i4818e.pdf',
   ],
   rTemplate: `# ============================================================
 # M-Quantile Estimator (Unit-Level, Robust)

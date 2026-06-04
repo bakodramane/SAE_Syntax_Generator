@@ -35,9 +35,9 @@ const entry: CatalogueEntry = {
     'A small proportion of areas are outliers; the majority follow the FH model.',
   ],
   references: [
-    'Chambers, R. & Tzavidis, N. (2006). Biometrika 93, 255–268.',
-    'Sinha, S.K. & Rao, J.N.K. (2009). Canadian Journal of Statistics 37, 381–399.',
-    'Rao & Molina (2015). Small Area Estimation, 2nd ed. Ch. 7.',
+    'Chambers, R. & Tzavidis, N. (2006). Biometrika 93, 255–268. https://doi.org/10.1093/biomet/93.2.255',
+    'Sinha, S.K. & Rao, J.N.K. (2009). Canadian Journal of Statistics 37, 381–399. https://doi.org/10.1002/cjs.10007',
+    'Rao, J.N.K. & Molina, I. (2015). Small Area Estimation, 2nd ed. Wiley. Ch. 7. https://onlinelibrary.wiley.com/doi/book/10.1002/9781118735855',
   ],
   rTemplate: `# ============================================================
 # Robust Fay–Herriot

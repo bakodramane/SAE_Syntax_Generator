@@ -38,9 +38,9 @@ const entry: CatalogueEntry = {
     'Units within each area are conditionally independent given the random effect.',
   ],
   references: [
-    'Jiang, J. & Lahiri, P. (2001). Ann. Inst. Statistical Mathematics 53, 217–243.',
-    'Jiang, J. (2003). Journal of Statistical Planning and Inference 111, 117–127.',
-    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 2.6.7.',
+    'Jiang, J. & Lahiri, P. (2001). Ann. Inst. Statistical Mathematics 53, 217–243. https://doi.org/10.1023/A:1017553022248',
+    'Jiang, J. (2003). Journal of Statistical Planning and Inference 111, 117–127. https://doi.org/10.1016/S0378-3758(02)00196-2',
+    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 2.6.7. https://www.fao.org/3/i4818e/i4818e.pdf',
   ],
   rTemplate: `# ============================================================
 # GLMM-EBP — Binary / Proportion (Logit)
