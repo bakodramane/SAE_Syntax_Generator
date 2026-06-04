@@ -1,14 +1,7 @@
+import { Wizard } from './wizard/Wizard.js'
+
 function App() {
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900">SAE Syntax Generator</h1>
-        <p className="mt-2 text-gray-600">
-          Small Area Estimation script generator — wizard coming in Phase 4.
-        </p>
-      </div>
-    </div>
-  )
+  return <Wizard />
 }
 
 export default App

@@ -10,7 +10,8 @@ export interface UserInputs {
   coordinateLat?: string
   coordinateLon?: string
   contiguityMatrixPath?: string
-  censusDataPath?: string
+  censusDataPath?: string     // unit-level census microdata (EBP, BHF, ELL, HB-unit)
+  areaDataPath?: string       // area-level file with direct estimates + area auxiliaries (FH, Spatial-FH, GREG)
   surveyDataPath?: string
   stataVersion: number
   nSimulations?: number
@@ -33,6 +34,7 @@ function buildTokenMap(inputs: UserInputs): Record<string, string> {
   const auxStata = inputs.auxiliaryVars.join(' ')
   const survey = inputs.surveyDataPath ?? 'survey.csv'
   const census = inputs.censusDataPath ?? 'census.csv'
+  const area = inputs.areaDataPath ?? 'area_data.csv'
 
   return {
     DATE: date,
@@ -45,8 +47,8 @@ function buildTokenMap(inputs: UserInputs): Record<string, string> {
     DIRECT_EST_VAR: inputs.directEstVar ?? '',
     DIRECT_VAR_VAR: inputs.directVarVar ?? '',
     SURVEY_DATA: survey,
-    CENSUS_DATA: census,
-    AREA_DATA: census,       // area-level aggregates default to the same path as census
+    CENSUS_DATA: census,   // unit-level census microdata
+    AREA_DATA: area,       // area-level aggregates (direct estimates + area auxiliaries)
     CONTIG_MATRIX: inputs.contiguityMatrixPath ?? 'contiguity_matrix.csv',
     N_SIM: String(inputs.nSimulations ?? 200),
     MSE_METHOD: inputs.mseMethod ?? 'bootstrap',
