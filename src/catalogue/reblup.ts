@@ -39,8 +39,8 @@ const entry: CatalogueEntry = {
     'A small proportion of units are outliers; Huber tuning constant c = 1.345 is appropriate.',
   ],
   references: [
-    'Sinha, S.K. & Rao, J.N.K. (2009). Canadian Journal of Statistics 37, 381–399.',
-    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 5.2.2.',
+    'Sinha, S.K. & Rao, J.N.K. (2009). Canadian Journal of Statistics 37, 381–399. https://doi.org/10.1002/cjs.10007',
+    'FAO (2015). SAE Methods for Agricultural Surveys. Ch. 5.2.2. https://www.fao.org/3/i4818e/i4818e.pdf',
   ],
   rTemplate: `# ============================================================
 # Robust EBLUP (REBLUP) — Sinha–Rao

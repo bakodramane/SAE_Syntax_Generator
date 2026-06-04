@@ -43,10 +43,10 @@ const entry: CatalogueEntry = {
     'No informative sampling given the model covariates.',
   ],
   references: [
-    'Molina, I. & Rao, J.N.K. (2010). Canadian Journal of Statistics 38, 369–385.',
+    'Molina, I. & Rao, J.N.K. (2010). Canadian Journal of Statistics 38, 369–385. https://doi.org/10.1002/cjs.10051',
     'Corral, P., Molina, I., Cojocaru, A. & Segovia, S. (2022). Guidelines to SAE for Poverty Mapping. World Bank. http://hdl.handle.net/10986/37728',
-    'Kreutzmann, A.-K. et al. (2019). The R Journal 11(1). [emdi package]',
-    'povmap package: https://cran.r-project.org/package=povmap',
+    'Kreutzmann, A.-K. et al. (2019). The R Journal 11(1). [emdi package] https://doi.org/10.32614/RJ-2019-057',
+    'povmap package: CRAN. https://cran.r-project.org/package=povmap',
   ],
   caveats: [
     'Stata implementation requires v17+; use R (emdi/povmap) for Stata 14 users.',

@@ -41,9 +41,9 @@ const entry: CatalogueEntry = {
     'Survey and census share comparable variable definitions and measurement periods.',
   ],
   references: [
-    'Elbers, C., Lanjouw, J. & Lanjouw, P. (2003). Econometrica 71(1), 355–364.',
-    'Corral, P. et al. (2022). Guidelines to SAE for Poverty Mapping. World Bank.',
-    'World Bank PovMap software: https://www.worldbank.org/en/data/datatopics/povmap',
+    'Elbers, C., Lanjouw, J. & Lanjouw, P. (2003). Econometrica 71(1), 355–364. https://doi.org/10.1111/1468-0262.00416',
+    'Corral, P. et al. (2022). Guidelines to SAE for Poverty Mapping. World Bank. http://hdl.handle.net/10986/37728',
+    'World Bank PovMap software. https://www.worldbank.org/en/data/datatopics/povmap',
   ],
   caveats: [
     'EBP is statistically superior for most applications; prefer EBP unless required.',
