@@ -34,3 +34,7 @@ test-results/
 # Logs
 *.log
 npm-debug.log*
+
+# Lighthouse reports (local only)
+lighthouse-report.json
+lighthouse-report.html
