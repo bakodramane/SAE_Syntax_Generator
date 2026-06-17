@@ -72,7 +72,8 @@ Open `src/catalogue/my-new-method.ts` and edit each field. The full schema is de
 |-------|------|-------------|
 | `spatial` | `boolean` | Does the method explicitly model spatial dependence? |
 | `robust` | `boolean` | Is the method robust to outliers (M-estimation or similar)? |
-| `mseMethod` | `'prasad-rao' \| 'bootstrap' \| 'both' \| 'posterior'` | How mean squared error is estimated |
+| `requiresAuxiliaryVariances` | `boolean` (optional) | Set `true` for measurement-error methods that need the sampling variances of the auxiliary estimates (e.g. `fh-me`). Treated as `false` when absent. When `true`, the recommender only offers the method if the user has declared sample-based auxiliaries, and it expects the variance columns to be supplied. |
+| `mseMethod` | `'prasad-rao' \| 'bootstrap' \| 'both' \| 'posterior' \| 'jackknife'` | How mean squared error is estimated. Use `'jackknife'` for the measurement-error Fay–Herriot model, whose MSE is estimated by jackknife only. |
 
 ### Software
 
@@ -112,6 +113,8 @@ be substituted from user input.
 | `{{AUX_VARS_R}}` | Auxiliary variables as `var1 + var2 + ...` (R formula syntax) |
 | `{{AUX_VARS_STATA}}` | Auxiliary variables as `var1 var2 ...` (space-separated) |
 | `{{AUX_VARS_R_VEC}}` | Auxiliary variables as `c("var1", "var2", ...)` (R vector) |
+| `{{AUX_VAR_VARIANCES_R}}` | Auxiliary sampling-variance column names as a quoted R character vector, e.g. `"var_x1", "var_x2"` (measurement-error methods) |
+| `{{CI_ARRAY_BUILDER_R}}` | Generated R code that assembles the per-domain measurement-error variance–covariance array `Ci` from the variance columns (used by `fh-me`) |
 | `{{SURVEY_DATA}}` | Path to the survey CSV file |
 | `{{AREA_DATA}}` | Path to the area-level CSV file |
 | `{{CENSUS_DATA}}` | Path to the census CSV file |

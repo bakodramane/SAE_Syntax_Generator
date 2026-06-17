@@ -17,6 +17,8 @@ Use these tokens consistently across all R and Stata templates:
 | `{{AUX_VARS_R}}` | Auxiliary variables as R formula terms, e.g. `x1 + x2` |
 | `{{AUX_VARS_R_VEC}}` | Auxiliary variable names as a quoted R character vector, e.g. `"x1", "x2"` — for column-selection contexts such as `c({{AUX_VARS_R_VEC}})` |
 | `{{AUX_VARS_STATA}}` | Auxiliary variables space-separated, e.g. `x1 x2` |
+| `{{AUX_VAR_VARIANCES_R}}` | Auxiliary sampling-variance column names as a quoted R character vector, e.g. `"var_x1", "var_x2"` |
+| `{{CI_ARRAY_BUILDER_R}}` | Generated R code assembling the per-domain measurement-error variance–covariance array `Ci` from the variance columns |
 | `{{WEIGHT_VAR}}` | Sampling weight variable name |
 | `{{DIRECT_EST_VAR}}` | Pre-computed direct estimate column |
 | `{{DIRECT_VAR_VAR}}` | Sampling variance of the direct estimate |
@@ -1311,3 +1313,129 @@ Rao, J.N.K. & Molina, I. (2015). *Small Area Estimation*, 2nd ed. Wiley.
 Sinha, S.K. & Rao, J.N.K. (2009). Robust small area estimation. *Canadian Journal of Statistics* 37, 381–399.
 
 Asian Development Bank (2020). *Introduction to Small Area Estimation Techniques: A Practical Guide for National Statistical Offices.* https://www.adb.org/publications/introduction-small-area-estimation-techniques
+
+---
+
+## §7 Survey-based auxiliary variables (added v1.1.0)
+
+Some users have auxiliary variables that come from a large *sample* (such as an agricultural
+census run as a sample) rather than a full census or register. Those auxiliaries carry sampling
+error. The standard Fay–Herriot model assumes auxiliaries are known exactly; using it here biases
+the model, understates uncertainty, and can perform worse than the direct estimate. This section
+adds the measurement-error Fay–Herriot model (Ybarra & Lohr, 2008).
+
+When the user declares sample-based auxiliaries, the recommender ranks `fh-me` first for
+area-level continuous or proportion targets and attaches a prominent caveat to every standard
+known-covariate area-level method (`fh-eblup`, `spatial-fh`, `robust-fh`). If the sampling
+variances of the auxiliary estimates are not available, `fh-me` carries a blocking caveat because
+the correction cannot be applied without them.
+
+### 7.01 Fay–Herriot with Measurement Error (Ybarra–Lohr)
+
+```
+id:              fh-me
+displayName:     Fay–Herriot with Measurement Error (Area-Level, Sample-Based Auxiliaries)
+level:           area
+inferenceType:   frequentist
+targetTypes:     [continuous, proportion]
+requiredInputs:
+  microdata:           false
+  areaAggregates:      true
+  censusAuxiliaries:   area
+  weights:             false
+  contiguityMatrix:    false
+  coordinates:         false
+requiresAuxiliaryVariances: true
+spatial:         false
+robust:          false
+mseMethod:       jackknife
+rPackage:        emdi (or saeME)
+rFunction:       fh(method = "me") / saeME::eblupME
+stataPackage:    base
+stataCommand:    (no standard Stata command; use R)
+stataMinVersion: 14
+stataV14Fallback: |
+  * There is no standard Stata command for the measurement-error Fay-Herriot model.
+  * Run the R script for this method (emdi or saeME package).
+  * If you must stay in Stata, the standard fhsae command ignores auxiliary
+  * sampling error and may bias the estimates — interpret with caution:
+  * fhsae {{DIRECT_EST_VAR}} {{AUX_VARS_STATA}}, vardir({{DIRECT_VAR_VAR}}) method(reml)
+plainDescription: |
+  An extension of the Fay–Herriot model for when your auxiliary variables come from a
+  sample (for example, an agricultural census run as a large sample) rather than a full
+  census, so the auxiliaries carry their own sampling error. The model adjusts for that
+  error, leaning more on the direct survey estimate in areas where the auxiliaries are
+  noisier. It needs the sampling variance of each auxiliary estimate for each area.
+whyChooseThis: |
+  Choose this when your area-level auxiliary totals or means are themselves survey
+  estimates rather than known population values. Using a standard Fay–Herriot model in
+  that situation can bias the results and overstate their precision, and can even do worse
+  than the direct estimate. This method is designed to avoid that.
+assumptions:
+  - Sampling variances of the auxiliary estimates are available for each area.
+  - The auxiliary measurement error is of the classical type (observed = true + noise).
+  - All other Fay–Herriot assumptions hold (known direct-estimate variances; correct
+    linking model; enough areas for variance estimation).
+references:
+  - Ybarra, L.M.R. & Lohr, S.L. (2008). Biometrika 95(4), 919–931.
+    https://doi.org/10.1093/biomet/asn048
+  - Harmening, S. et al. (2023). The R Journal 15(1), RJ-2023-039.
+    https://journal.r-project.org/articles/RJ-2023-039/
+  - saeME package: https://cran.r-project.org/package=saeME
+caveats:
+  - Requires the sampling variances of the auxiliary estimates; without them the
+    correction cannot be applied.
+  - MSE is estimated by jackknife only.
+  - No Stata equivalent; R is required.
+```
+
+**R template:**
+```r
+# ============================================================
+# Fay–Herriot with Measurement Error (Ybarra–Lohr)
+# For auxiliary variables that come from a sample (e.g. an agricultural
+# census run as a large sample), and therefore carry sampling error.
+# Generated by SAE Syntax Generator on {{DATE}}
+# Reference: Ybarra & Lohr (2008); Harmening et al. (2023)
+# R package: emdi
+# Area-level data: {{AREA_DATA}}
+# ============================================================
+
+if (!requireNamespace("emdi", quietly = TRUE)) install.packages("emdi")
+library(emdi)
+
+area_data <- read.csv("{{AREA_DATA}}")
+# Required columns:
+#   {{DIRECT_EST_VAR}}      direct estimate of the target, per area
+#   {{DIRECT_VAR_VAR}}      sampling variance of the direct estimate, per area
+#   {{AUX_VARS_R}}          auxiliary estimates (from the large-sample census)
+#   {{AUX_VAR_VARIANCES_R}} sampling variance of each auxiliary estimate, per area
+#   {{AREA_ID}}             area identifier
+
+# Build the per-domain measurement-error variance–covariance array Ci.
+# emdi expects an array of (p+1) x (p+1) x m, where p = number of auxiliaries,
+# the leading row/column is the intercept (zero variance), and off-diagonal
+# covariances between auxiliaries are assumed zero unless supplied.
+{{CI_ARRAY_BUILDER_R}}
+
+# Fit the measurement-error Fay–Herriot model
+fh_me <- fh(
+  fixed         = {{DIRECT_EST_VAR}} ~ {{AUX_VARS_R}},
+  vardir        = "{{DIRECT_VAR_VAR}}",
+  combined_data = area_data,
+  domains       = "{{AREA_ID}}",
+  method        = "me",
+  Ci            = Ci,
+  MSE           = TRUE,
+  mse_type      = "jackknife"
+)
+
+summary(fh_me)
+estimators(fh_me, MSE = TRUE, CV = TRUE)
+
+# NOTE: the modified shrinkage factor leans more on the direct estimate in
+# areas where the auxiliary variances are large. Compare against the direct
+# estimate (the benchmark) to confirm the model is helping rather than harming.
+```
+
+**Stata template:** use the `stataV14Fallback` note above (R-only method).

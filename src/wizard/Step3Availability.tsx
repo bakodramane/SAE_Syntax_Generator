@@ -80,6 +80,25 @@ export function Step3Availability() {
     dispatch({ type: 'SET_AVAILABILITY', payload: { ...availability, targetType: v } })
   }
 
+  function setAuxiliaryFromSample(fromSample: boolean) {
+    dispatch({
+      type: 'SET_AVAILABILITY',
+      payload: {
+        ...availability,
+        auxiliaryFromSample: fromSample,
+        // Reset the follow-up answer when switching back to a register source.
+        hasAuxiliaryVariances: fromSample ? availability.hasAuxiliaryVariances : false,
+      },
+    })
+  }
+
+  function setHasAuxiliaryVariances(has: boolean) {
+    dispatch({
+      type: 'SET_AVAILABILITY',
+      payload: { ...availability, hasAuxiliaryVariances: has },
+    })
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -136,6 +155,66 @@ export function Step3Availability() {
             </span>
           </label>
         ))}
+      </fieldset>
+
+      <hr className="border-gray-200" />
+
+      {/* Auxiliary variable source */}
+      <fieldset className="space-y-2">
+        <legend className="text-sm font-semibold text-gray-800">
+          Where do your auxiliary variables come from?{' '}
+          <Tooltip text="If your auxiliary variables are themselves survey estimates, they carry sampling error. A standard Fay–Herriot model assumes they are known exactly, which can bias the results, so the recommender will prefer a measurement-error model instead.">
+            <InfoIcon />
+          </Tooltip>
+        </legend>
+        <div className="space-y-1.5 pl-1">
+          <label className="flex items-start gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="auxiliarySource"
+              checked={!availability.auxiliaryFromSample}
+              onChange={() => setAuxiliaryFromSample(false)}
+              className="mt-0.5 accent-indigo-600"
+            />
+            <span className="text-sm text-gray-700">
+              A full census or administrative register (known exactly)
+            </span>
+          </label>
+          <label className="flex items-start gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="auxiliarySource"
+              checked={availability.auxiliaryFromSample}
+              onChange={() => setAuxiliaryFromSample(true)}
+              className="mt-0.5 accent-indigo-600"
+              data-testid="aux-source-sample"
+            />
+            <span className="text-sm text-gray-700">
+              A sample or large survey (estimated, with sampling error)
+            </span>
+          </label>
+        </div>
+
+        {/* Follow-up: only shown when auxiliaries come from a sample */}
+        {availability.auxiliaryFromSample && (
+          <div className="mt-2 ml-6 border-l-2 border-indigo-200 pl-4 py-1">
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={availability.hasAuxiliaryVariances}
+                onChange={e => setHasAuxiliaryVariances(e.target.checked)}
+                className="mt-0.5 accent-indigo-600 h-4 w-4"
+                data-testid="aux-has-variances"
+              />
+              <span className="text-sm text-gray-700 leading-snug flex items-start gap-1">
+                Can you provide the sampling variance of each auxiliary estimate for each area?
+                <Tooltip text="The measurement-error correction needs the sampling variance of each auxiliary estimate, area by area. Without these variances the measurement-error model cannot be applied.">
+                  <InfoIcon />
+                </Tooltip>
+              </span>
+            </label>
+          </div>
+        )}
       </fieldset>
 
       <hr className="border-gray-200" />

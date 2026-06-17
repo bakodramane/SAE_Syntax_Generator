@@ -7,6 +7,7 @@ const ROLES: { value: VariableRole; label: string; tip: string }[] = [
   { value: 'target',     label: 'Target',          tip: 'The outcome variable you want to estimate for small areas (e.g. poverty rate, income).' },
   { value: 'area-id',   label: 'Area identifier',  tip: 'The column that identifies which small area each record belongs to (e.g. district code).' },
   { value: 'auxiliary', label: 'Auxiliary',         tip: 'A covariate available in both the survey and the population data that is correlated with the target.' },
+  { value: 'auxiliary-variance', label: 'Auxiliary variance', tip: 'The sampling variance of a sample-based auxiliary estimate, area by area. Pair it with its auxiliary, in the same order. Required by the measurement-error Fay–Herriot model.' },
   { value: 'weight',    label: 'Survey weight',     tip: 'The sampling weight for each unit, reflecting the probability of selection.' },
   { value: 'direct-est', label: 'Direct estimate', tip: 'A pre-computed area-level estimate (e.g. from the direct estimator). Used only by area-level methods.' },
   { value: 'direct-var', label: 'Sampling variance', tip: 'The estimated sampling variance of the direct estimate. Required by Fay–Herriot models.' },
@@ -49,14 +50,25 @@ export function Step2Roles() {
     dispatch({ type: 'SET_VARIABLES', payload: updated })
   }
 
+  const fromSample = state.availability.auxiliaryFromSample
+  // The auxiliary-variance role is only relevant for sample-based auxiliaries.
+  const availableRoles = fromSample ? ROLES : ROLES.filter(r => r.value !== 'auxiliary-variance')
+
   const targets  = state.variables.filter(v => v.role === 'target')
   const areaIds  = state.variables.filter(v => v.role === 'area-id')
   const auxVars  = state.variables.filter(v => v.role === 'auxiliary')
+  const auxVarVars = state.variables.filter(v => v.role === 'auxiliary-variance')
 
   const errors: string[] = []
   if (targets.length !== 1) errors.push(`Exactly one variable must be assigned the "Target" role (currently ${targets.length}).`)
   if (areaIds.length < 1)   errors.push('At least one variable must be assigned the "Area identifier" role.')
   if (auxVars.length < 1)   errors.push('At least one variable must be assigned the "Auxiliary" role.')
+  if (fromSample && auxVarVars.length > 0 && auxVarVars.length !== auxVars.length) {
+    errors.push(
+      `Pair each auxiliary with its variance column: ${auxVars.length} auxiliary variable(s) ` +
+      `but ${auxVarVars.length} "Auxiliary variance" column(s). They must match, in order.`,
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -66,6 +78,15 @@ export function Step2Roles() {
           Assign a role and confirm the type for each variable. Roles marked with (?) have tooltips explaining what they mean.
         </p>
       </div>
+
+      {fromSample && (
+        <div className="bg-indigo-50 border border-indigo-200 rounded p-3 text-sm text-indigo-800">
+          Your auxiliary variables come from a sample. If you can supply their sampling variances,
+          assign each variance column the <span className="font-medium">"Auxiliary variance"</span>{' '}
+          role, in the same order as the auxiliaries they correspond to. The measurement-error
+          Fay–Herriot model uses these to correct for sampling error.
+        </div>
+      )}
 
       <div className="overflow-x-auto rounded border border-gray-200">
         <table className="w-full text-sm">
@@ -96,7 +117,7 @@ export function Step2Roles() {
                     onChange={e => setRole(i, e.target.value as VariableRole)}
                     className="border border-gray-300 rounded px-2 py-1 text-xs w-full focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                   >
-                    {ROLES.map(r => (
+                    {availableRoles.map(r => (
                       <option key={r.value} value={r.value} title={r.tip}>{r.label}</option>
                     ))}
                   </select>

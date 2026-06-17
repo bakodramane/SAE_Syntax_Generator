@@ -15,6 +15,7 @@ import glmmBinary from './glmm-binary.js'
 import glmmCount from './glmm-count.js'
 import twoPartZinfl from './two-part-zinfl.js'
 import hbUnit from './hb-unit.js'
+import fhMe from './fh-me.js'
 
 export const catalogue: CatalogueEntry[] = [
   direct,
@@ -33,6 +34,7 @@ export const catalogue: CatalogueEntry[] = [
   glmmCount,
   twoPartZinfl,
   hbUnit,
+  fhMe,
 ]
 
 export default catalogue

@@ -93,4 +93,51 @@ test.describe('Wizard happy path', () => {
     const dl = await downloadPromise
     expect(dl.suggestedFilename()).toContain('.R')
   })
+
+  test('sample-based auxiliaries: FH-ME appears and standard FH shows the sampling-error caveat', async ({ page }) => {
+    // ── Step 1: Upload codebook ─────────────────────────────────────────────
+    const fileInput = page.locator('[data-testid="file-input"]')
+    const fixturePath = path.resolve(__dirname, 'fixtures/test-codebook.csv')
+    await fileInput.setInputFiles(fixturePath)
+    await page.getByRole('button', { name: /next/i }).click()
+
+    // ── Step 2: Assign roles ────────────────────────────────────────────────
+    await expect(page.getByText('Variable roles')).toBeVisible()
+    await setRole(page, 'income', 'Target')
+    await setRole(page, 'edu_rate', 'Auxiliary')
+    await setRole(page, 'urban_pct', 'Auxiliary')
+    await setRole(page, 'dir_est', 'Direct estimate')
+    await setRole(page, 'dir_var', 'Sampling variance')
+    await page.getByRole('button', { name: /next/i }).click()
+
+    // ── Step 3: Data availability ───────────────────────────────────────────
+    await expect(page.getByText('Data availability')).toBeVisible()
+
+    // Continuous target
+    await page.getByText('Continuous (e.g. income', { exact: false }).first().click()
+
+    // Area aggregates + census auxiliaries so FH-EBLUP and FH-ME are both eligible
+    await page.getByText('area-level direct estimates', { exact: false }).first().click()
+    await page.getByText('population-level auxiliary variables', { exact: false }).first().click()
+
+    // Declare sample-based auxiliaries, with variances available
+    await page.locator('[data-testid="aux-source-sample"]').click()
+    await page.locator('[data-testid="aux-has-variances"]').check()
+
+    await page.getByRole('button', { name: /next/i }).click()
+
+    // ── Step 4: Methods ─────────────────────────────────────────────────────
+    await expect(page.getByText('Recommended methods')).toBeVisible()
+
+    // FH-ME card is present and selectable
+    const fhMeRadio = page.locator('[data-testid="select-fh-me"]')
+    await expect(fhMeRadio).toBeVisible()
+
+    // Standard FH-EBLUP card shows the prominent sampling-error caveat
+    await expect(page.locator('[data-testid="sampling-error-note-fh-eblup"]')).toBeVisible()
+
+    // FH-ME is selectable
+    await fhMeRadio.click()
+    await expect(fhMeRadio).toBeChecked()
+  })
 })

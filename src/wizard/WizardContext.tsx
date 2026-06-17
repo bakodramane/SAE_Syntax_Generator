@@ -47,6 +47,8 @@ const defaultAvailability: DataAvailability = {
   targetType: 'unknown',
   likelyOutliers: false,
   likelySpatialCorrelation: false,
+  auxiliaryFromSample: false,
+  hasAuxiliaryVariances: false,
 }
 
 const initialState: WizardState = {

@@ -14,6 +14,8 @@ const base: DataAvailability = {
   targetType: 'continuous',
   likelyOutliers: false,
   likelySpatialCorrelation: false,
+  auxiliaryFromSample: false,
+  hasAuxiliaryVariances: false,
 }
 
 function ids(recs: ReturnType<typeof recommend>): string[] {
@@ -306,4 +308,75 @@ describe('Scenario 15 — purity and determinism', () => {
     expect(ids(a)).toEqual(ids(b))
     expect(a.map(r => r.rank)).toEqual(b.map(r => r.rank))
   })
+})
+
+// ── Scenario 16: Sample-based auxiliaries with variances → FH-ME first ─────────
+describe('Scenario 16 — sample auxiliaries, variances available', () => {
+  const avail: DataAvailability = {
+    ...base,
+    hasAreaAggregates: true,
+    hasCensusAuxiliaries: true,
+    targetType: 'continuous',
+    auxiliaryFromSample: true,
+    hasAuxiliaryVariances: true,
+  }
+  const recs = recommend(avail)
+
+  it('FH-ME is present', () => expect(ids(recs)).toContain('fh-me'))
+  it('FH-ME ranks first', () => expect(recs[0].entry.id).toBe('fh-me'))
+  it('FH-ME ranks above standard FH-EBLUP', () =>
+    expect(rankOf(recs, 'fh-me')).toBeLessThan(rankOf(recs, 'fh-eblup')))
+  it('standard FH-EBLUP carries the sampling-error caveat', () => {
+    const fh = recs.find(r => r.entry.id === 'fh-eblup')!
+    expect(fh.caveats.some(c => c.includes('come from a sample'))).toBe(true)
+  })
+  it('FH-ME does NOT carry the blocking caveat (variances available)', () => {
+    const fhMe = recs.find(r => r.entry.id === 'fh-me')!
+    expect(fhMe.caveats.some(c => c.includes('provide the variance columns'))).toBe(false)
+  })
+  it('direct estimator ranks last', () => expect(recs[recs.length - 1].entry.id).toBe('direct'))
+})
+
+// ── Scenario 17: Sample-based auxiliaries, variances missing → blocking caveat ──
+describe('Scenario 17 — sample auxiliaries, variances missing', () => {
+  const avail: DataAvailability = {
+    ...base,
+    hasAreaAggregates: true,
+    hasCensusAuxiliaries: true,
+    targetType: 'proportion',
+    auxiliaryFromSample: true,
+    hasAuxiliaryVariances: false,
+  }
+  const recs = recommend(avail)
+
+  it('FH-ME is present', () => expect(ids(recs)).toContain('fh-me'))
+  it('FH-ME carries the blocking caveat', () => {
+    const fhMe = recs.find(r => r.entry.id === 'fh-me')!
+    expect(fhMe.caveats.some(c => c.includes('provide the variance columns'))).toBe(true)
+  })
+  it('standard FH-EBLUP still carries the sampling-error caveat', () => {
+    const fh = recs.find(r => r.entry.id === 'fh-eblup')!
+    expect(fh.caveats.some(c => c.includes('come from a sample'))).toBe(true)
+  })
+})
+
+// ── Scenario 18: Register auxiliaries → no change, FH-ME hidden ─────────────────
+describe('Scenario 18 — register auxiliaries (known exactly)', () => {
+  const avail: DataAvailability = {
+    ...base,
+    hasAreaAggregates: true,
+    hasCensusAuxiliaries: true,
+    targetType: 'continuous',
+    auxiliaryFromSample: false,
+    hasAuxiliaryVariances: false,
+  }
+  const recs = recommend(avail)
+
+  it('FH-ME is NOT present', () => expect(ids(recs)).not.toContain('fh-me'))
+  it('FH-EBLUP ranks first (unchanged behaviour)', () => expect(recs[0].entry.id).toBe('fh-eblup'))
+  it('FH-EBLUP carries no sampling-error caveat', () => {
+    const fh = recs.find(r => r.entry.id === 'fh-eblup')!
+    expect(fh.caveats.some(c => c.includes('come from a sample'))).toBe(false)
+  })
+  it('direct estimator ranks last', () => expect(recs[recs.length - 1].entry.id).toBe('direct'))
 })

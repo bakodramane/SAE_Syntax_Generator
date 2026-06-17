@@ -5,6 +5,7 @@ import fhEblup from '../catalogue/fh-eblup.js'
 import bhfEblup from '../catalogue/bhf-eblup.js'
 import ebpCensuseb from '../catalogue/ebp-censuseb.js'
 import glmmBinary from '../catalogue/glmm-binary.js'
+import fhMe from '../catalogue/fh-me.js'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -227,6 +228,58 @@ describe('generateCode — glmm-binary (binary target)', () => {
 
   it('Stata script uses bernoulli logit family', () => {
     expect(code.stata).toContain('family(bernoulli)')
+  })
+})
+
+// ── FH-ME (measurement error, sample-based auxiliaries) ────────────────────────
+describe('generateCode — fh-me (measurement-error Fay–Herriot)', () => {
+  const FH_ME_INPUTS: UserInputs = {
+    targetVar: 'mean_yield',
+    areaIdVar: 'district',
+    auxiliaryVars: ['agcensus_area', 'fertiliser_use'],
+    auxiliaryVarianceVars: ['var_agcensus_area', 'var_fertiliser_use'],
+    directEstVar: 'dir_est',
+    directVarVar: 'dir_var',
+    areaDataPath: 'area_data.csv',
+    stataVersion: 14,
+  }
+  const code = generateCode(fhMe, FH_ME_INPUTS)
+
+  it('R script loads the emdi package', () => {
+    expect(code.r).toContain('library(emdi)')
+  })
+
+  it('R script calls fh(... method = "me" ...)', () => {
+    expect(code.r).toContain('fh(')
+    expect(code.r).toContain('method        = "me"')
+  })
+
+  it('R script references all auxiliary variance columns', () => {
+    assertAllVarsPresent(code.r, ['var_agcensus_area', 'var_fertiliser_use'], 'R')
+  })
+
+  it('R script references all auxiliary columns and direct estimate columns', () => {
+    assertAllVarsPresent(code.r, ['agcensus_area', 'fertiliser_use', 'dir_est', 'dir_var'], 'R')
+  })
+
+  it('R script builds the Ci array', () => {
+    expect(code.r).toContain('Ci <- array(0')
+    expect(code.r).toContain('aux_var_cols <- c("var_agcensus_area", "var_fertiliser_use")')
+  })
+
+  it('R script documents the zero-covariance assumption', () => {
+    expect(code.r.toLowerCase()).toContain('covariances between auxiliaries are assumed')
+  })
+
+  it('R script has no unreplaced {{ tokens', () => assertNoUnreplacedTokens(code.r, 'R'))
+  it('Stata script has no unreplaced {{ tokens', () => assertNoUnreplacedTokens(code.stata, 'Stata'))
+
+  it('Stata output is an R-only explanatory note', () => {
+    expect(code.stata.toLowerCase()).toContain('use the r script')
+  })
+
+  it('does not use fallback at Stata 14 (stataMinVersion 14)', () => {
+    expect(code.usedFallback).toBe(false)
   })
 })
 

@@ -19,11 +19,12 @@ const EXPECTED_IDS = [
   'glmm-count',
   'two-part-zinfl',
   'hb-unit',
+  'fh-me',
 ]
 
 describe('Catalogue index', () => {
-  it('exports exactly 16 entries', () => {
-    expect(catalogue).toHaveLength(16)
+  it('exports exactly 17 entries', () => {
+    expect(catalogue).toHaveLength(17)
   })
 
   it('contains all expected method IDs', () => {
@@ -128,7 +129,7 @@ describe('Catalogue schema validation', () => {
       })
 
       it('has valid mseMethod', () => {
-        expect(['prasad-rao', 'bootstrap', 'both', 'posterior']).toContain(
+        expect(['prasad-rao', 'bootstrap', 'both', 'posterior', 'jackknife']).toContain(
           entry.mseMethod,
         )
       })
