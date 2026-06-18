@@ -3,6 +3,7 @@ export type VariableRole =
   | 'area-id'
   | 'weight'
   | 'auxiliary'
+  | 'auxiliary-variance'
   | 'coordinate'
   | 'direct-est'
   | 'direct-var'
@@ -37,6 +38,12 @@ export interface DataAvailability {
   targetType: 'continuous' | 'binary' | 'proportion' | 'count' | 'poverty' | 'unknown'
   likelyOutliers: boolean
   likelySpatialCorrelation: boolean
+  // True when auxiliary variables are estimated from a survey or large sample
+  // (e.g. an agricultural census run as a sample) and therefore carry sampling error.
+  auxiliaryFromSample: boolean
+  // True when the user can supply the sampling variances of the auxiliary estimates,
+  // area by area. Required by the measurement-error Fay–Herriot model (fh-me).
+  hasAuxiliaryVariances: boolean
 }
 
 export interface CatalogueEntry {
@@ -55,7 +62,10 @@ export interface CatalogueEntry {
   }
   spatial: boolean
   robust: boolean
-  mseMethod: 'prasad-rao' | 'bootstrap' | 'both' | 'posterior'
+  // True when the method needs the sampling variances of the auxiliary estimates
+  // (the measurement-error Fay–Herriot model). Treated as false when absent.
+  requiresAuxiliaryVariances?: boolean
+  mseMethod: 'prasad-rao' | 'bootstrap' | 'both' | 'posterior' | 'jackknife'
   rPackage: string
   rFunction: string
   rTemplate: string

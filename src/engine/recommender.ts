@@ -10,6 +10,22 @@ export interface Recommendation {
 }
 
 const DIRECT_ID = 'direct'
+const FH_ME_ID = 'fh-me'
+
+// Standard area-level methods that assume the auxiliary variables are known exactly.
+// When the user declares sample-based auxiliaries, these carry a sampling-error caveat.
+const KNOWN_COVARIATE_AREA_METHODS = ['fh-eblup', 'spatial-fh', 'robust-fh']
+
+const SAMPLE_AUX_CAVEAT =
+  'Your auxiliary variables come from a sample and carry sampling error. This method ' +
+  'assumes they are known exactly, which can bias the estimates and understate their ' +
+  'uncertainty. Prefer the measurement-error model (FH-ME) unless the auxiliary sample ' +
+  'is very large.'
+
+const FH_ME_BLOCKING_CAVEAT =
+  'The measurement-error correction needs the sampling variances of your auxiliary ' +
+  'estimates. Without them this method cannot be applied — provide the variance columns, ' +
+  'or treat the auxiliaries as approximate and interpret results with caution.'
 
 // ── Eligibility ────────────────────────────────────────────────────────────────
 
@@ -34,6 +50,10 @@ function isEligible(entry: CatalogueEntry, availability: DataAvailability): bool
   if (req.coordinates && !availability.hasCoordinates) return false
   if (req.censusAuxiliaries !== 'none' && !availability.hasCensusAuxiliaries) return false
 
+  // Measurement-error methods only make sense when auxiliaries come from a sample.
+  // Hide them entirely when the user has register/census auxiliaries known exactly.
+  if (entry.requiresAuxiliaryVariances && !availability.auxiliaryFromSample) return false
+
   return true
 }
 
@@ -56,6 +76,17 @@ function computeScore(entry: CatalogueEntry, availability: DataAvailability): nu
   } = availability
 
   if (id === DIRECT_ID) return 9999
+
+  // ── Sample-based auxiliaries ──────────────────────────────────────────────────
+  // When the auxiliaries carry sampling error, the measurement-error Fay–Herriot
+  // model ranks first for area-level continuous or proportion targets.
+  if (
+    availability.auxiliaryFromSample &&
+    id === FH_ME_ID &&
+    (targetType === 'continuous' || targetType === 'proportion' || targetType === 'unknown')
+  ) {
+    return 5
+  }
 
   // ── Poverty target ──────────────────────────────────────────────────────────
   if (targetType === 'poverty') {
@@ -188,6 +219,12 @@ function buildWhyApplicable(entry: CatalogueEntry, availability: DataAvailabilit
 
   if (id === DIRECT_ID) {
     return 'Use as a benchmark to validate model-based estimates against the raw survey data.'
+  }
+
+  if (id === FH_ME_ID) {
+    return availability.auxiliaryFromSample
+      ? 'Ranked first because your auxiliary variables come from a sample: this measurement-error Fay–Herriot model corrects for the sampling error they carry, leaning more on the direct estimate where the auxiliaries are noisier.'
+      : 'Measurement-error Fay–Herriot model for auxiliary variables that come from a sample rather than a full census or register.'
   }
 
   // Poverty-specific explanations
@@ -350,6 +387,17 @@ function buildWhyApplicable(entry: CatalogueEntry, availability: DataAvailabilit
 function buildCaveats(entry: CatalogueEntry, availability: DataAvailability): string[] {
   const caveats: string[] = [...(entry.caveats ?? [])]
   const { likelyOutliers, likelySpatialCorrelation, hasOutOfSampleAreas } = availability
+
+  // Sample-based auxiliaries: warn the standard known-covariate area-level methods,
+  // and block FH-ME itself if the required auxiliary variances are not available.
+  if (availability.auxiliaryFromSample) {
+    if (KNOWN_COVARIATE_AREA_METHODS.includes(entry.id)) {
+      caveats.push(SAMPLE_AUX_CAVEAT)
+    }
+    if (entry.id === FH_ME_ID && !availability.hasAuxiliaryVariances) {
+      caveats.push(FH_ME_BLOCKING_CAVEAT)
+    }
+  }
 
   // Outlier warning for non-robust methods
   if (likelyOutliers && !entry.robust && entry.id !== DIRECT_ID) {

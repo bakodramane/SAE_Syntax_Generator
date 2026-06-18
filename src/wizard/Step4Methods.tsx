@@ -46,6 +46,11 @@ function MethodBadges({ rec }: { rec: Recommendation }) {
           Spatial
         </span>
       )}
+      {entry.requiresAuxiliaryVariances && (
+        <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+          Accounts for sampling error in auxiliaries
+        </span>
+      )}
       {isROnly(entry) && (
         <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">
           R only
@@ -114,16 +119,39 @@ function MethodCard({ rec, selected, comparison, onSelect, onToggleComparison }:
             <span>MSE: {entry.mseMethod}</span>
           </div>
 
-          {/* Caveats */}
-          {rec.caveats.length > 0 && (
-            <ul className="mt-2 space-y-0.5">
-              {rec.caveats.map((c, i) => (
-                <li key={i} className="text-xs text-amber-700 flex gap-1">
-                  <span>•</span><span>{c}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+          {/* Prominent sampling-error caveats — shown as a visible amber note */}
+          {(() => {
+            const isProminent = (c: string) =>
+              c.includes('come from a sample') || c.includes('provide the variance columns')
+            const prominent = rec.caveats.filter(isProminent)
+            const rest = rec.caveats.filter(c => !isProminent(c))
+            return (
+              <>
+                {prominent.length > 0 && (
+                  <div
+                    role="alert"
+                    className="mt-2 bg-amber-50 border border-amber-300 rounded p-2 space-y-1"
+                    data-testid={`sampling-error-note-${entry.id}`}
+                  >
+                    {prominent.map((c, i) => (
+                      <p key={i} className="text-xs text-amber-800 flex gap-1">
+                        <span aria-hidden>⚠</span><span>{c}</span>
+                      </p>
+                    ))}
+                  </div>
+                )}
+                {rest.length > 0 && (
+                  <ul className="mt-2 space-y-0.5">
+                    {rest.map((c, i) => (
+                      <li key={i} className="text-xs text-amber-700 flex gap-1">
+                        <span>•</span><span>{c}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
+            )
+          })()}
 
           {/* Why this method — expandable */}
           <div className="mt-2">

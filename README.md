@@ -14,9 +14,12 @@ Small area estimation bridges the gap between nationally representative surveys 
 for reliable estimates at district, county, or municipality level. This tool:
 
 1. Lets you describe your data (variable types, what auxiliary data you have, Stata version).
-2. Recommends the most appropriate SAE method from a catalogue of 16 methods.
+2. Recommends the most appropriate SAE method from a catalogue of 17 methods.
 3. Generates a complete, commented R script and Stata `.do` file — ready to run with your
    real variable names filled in.
+4. Supports auxiliary variables that come from a sample (an agricultural census or other large
+   survey) rather than a full census or register, via the measurement-error Fay–Herriot model
+   (Ybarra & Lohr, 2008), which corrects for the sampling error those auxiliaries carry.
 
 Target users: statisticians in national statistical offices and development organisations,
 including those working in countries where Stata 14 is the installed standard.

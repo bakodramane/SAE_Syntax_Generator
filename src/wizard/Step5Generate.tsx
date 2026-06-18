@@ -22,6 +22,9 @@ function buildInputs(state: ReturnType<typeof useWizard>['state']): UserInputs {
   const targetVar = state.variables.find(v => v.role === 'target')?.name ?? ''
   const areaIdVar = state.variables.find(v => v.role === 'area-id')?.name ?? ''
   const auxiliaryVars = state.variables.filter(v => v.role === 'auxiliary').map(v => v.name)
+  const auxiliaryVarianceVars = state.variables
+    .filter(v => v.role === 'auxiliary-variance')
+    .map(v => v.name)
   const weightVar = state.variables.find(v => v.role === 'weight')?.name
   const directEstVar = state.variables.find(v => v.role === 'direct-est')?.name
   const directVarVar = state.variables.find(v => v.role === 'direct-var')?.name
@@ -30,6 +33,7 @@ function buildInputs(state: ReturnType<typeof useWizard>['state']): UserInputs {
     targetVar,
     areaIdVar,
     auxiliaryVars,
+    auxiliaryVarianceVars: auxiliaryVarianceVars.length > 0 ? auxiliaryVarianceVars : undefined,
     weightVar,
     directEstVar,
     directVarVar,
@@ -188,6 +192,8 @@ export function Step5Generate() {
   const targetVar  = variables.find(v => v.role === 'target')
   const areaIdVar  = variables.find(v => v.role === 'area-id')
   const auxVars    = variables.filter(v => v.role === 'auxiliary')
+  const auxVarVars = variables.filter(v => v.role === 'auxiliary-variance')
+  const showAuxVariances = selectedMethodId === 'fh-me' || auxVarVars.length > 0
 
   return (
     <div className="space-y-6">
@@ -205,6 +211,20 @@ export function Step5Generate() {
         <p><span className="font-medium">Auxiliary variables:</span>{' '}
           {auxVars.map(v => <code key={v.name} className="bg-white border rounded px-1 mr-1">{v.name}</code>)}
         </p>
+        {showAuxVariances && (
+          <p data-testid="aux-variance-summary">
+            <span className="font-medium">Auxiliary variance columns:</span>{' '}
+            {auxVarVars.length > 0
+              ? auxVarVars.map((v, i) => (
+                  <span key={v.name}>
+                    <code className="bg-white border rounded px-1">{v.name}</code>
+                    <span className="text-gray-400 text-xs"> ↔ {auxVars[i]?.name ?? '—'}</span>
+                    {i < auxVarVars.length - 1 ? <span className="mr-1">, </span> : null}
+                  </span>
+                ))
+              : <span className="text-amber-700 text-xs">none assigned — FH-ME needs the sampling variance of each auxiliary</span>}
+          </p>
+        )}
         <p><span className="font-medium">Stata version:</span> {state.stataVersion}</p>
       </div>
 
